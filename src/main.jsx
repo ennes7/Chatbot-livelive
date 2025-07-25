@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Chatbot from "./ChatbotPrototype";
+import ChatbotFlow from "./ChatbotFlow.jsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Chatbot />
+    <ChatbotFlow />
   </React.StrictMode>
 );
