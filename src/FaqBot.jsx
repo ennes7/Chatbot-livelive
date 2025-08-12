@@ -1,41 +1,56 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const SAMPLE_FAQS = [
-  { q: 'Hoe werkt jullie werkwijze?', a: 'We starten met een intake, bepalen scope en matchen specialisten. Binnen 48 uur heb je de eerste profielen.' },
-  { q: 'Werken jullie met uurtarieven?', a: 'Ja. Tarieven variëren per expertise en senioriteit. Geef je bandbreedte door in de aanvraag.' },
-  { q: 'Kunnen jullie ook hybride werken?', a: 'Zeker. We leveren specialisten voor remote, hybride en on-site opdrachten.' },
-]
+export default function FaqBot({ title = 'FAQ op basis van website' }) {
+  const [q, setQ] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [items, setItems] = useState([])
+  const [status, setStatus] = useState('Nog geen data. Klik op “Website laden” om te starten.')
 
-export default function FaqBot({ title = 'FAQ Bot (demo)' }) {
-  const [input, setInput] = useState('')
-  const [messages, setMessages] = useState([
-    { from: 'bot', text: `Welkom bij ${title}. Stel je vraag of kies een voorbeeld:` }
-  ])
+  const scrape = async () => {
+    setBusy(true); setStatus('Website wordt geladen…')
+    try {
+      const res = await fetch('/api/scrape')
+      const js = await res.json()
+      setStatus(`Geladen: ${js.pages} pagina's`)
+    } catch(e) {
+      setStatus('Fout bij laden van website.')
+    } finally { setBusy(false) }
+  }
 
-  const ask = (text) => {
-    const lower = text.toLowerCase()
-    const hit = SAMPLE_FAQS.find(f => lower.includes(f.q.toLowerCase().split(' ')[0]))
-    const answer = hit ? hit.a : 'Ik heb hier geen direct antwoord op in de demo. Wil je dat ik deze bot koppel aan jullie echte FAQ-documenten?'
-    setMessages(m => [...m, { from: 'user', text }, { from: 'bot', text: answer }])
+  const ask = async () => {
+    if (!q.trim()) return
+    setBusy(true); setItems([]); setStatus('Zoeken in website…')
+    try {
+      const res = await fetch('/api/query?q=' + encodeURIComponent(q))
+      const js = await res.json()
+      setItems(js.results || [])
+      setStatus(js.results?.length ? 'Resultaten:' : 'Geen resultaat gevonden op de site.')
+    } catch(e) {
+      setStatus('Fout bij het zoeken.')
+    } finally { setBusy(false) }
   }
 
   return (
     <div>
-      <div className="small" style={{marginBottom:12}}>Dit is een demo-FAQ. We kunnen dit koppelen aan echte documenten (RAG / vector search).</div>
-      <div style={{display:'flex', gap:8, flexWrap:'wrap', marginBottom:12}}>
-        {SAMPLE_FAQS.map((f,i)=>(
-          <button key={i} className="btn secondary" onClick={()=>ask(f.q)}>{f.q}</button>
-        ))}
+      <div className="small" style={{marginBottom:8}}>{status}</div>
+      <div className="nav">
+        <button className="btn" onClick={scrape} disabled={busy}>Website laden</button>
       </div>
-      <div style={{background:'#0b1220', border:'1px solid rgba(148,163,184,.15)', borderRadius:10, padding:12, maxHeight:260, overflow:'auto', marginBottom:12}}>
-        {messages.map((m,i)=>(
-          <div key={i} style={{margin:'6px 0'}}><strong>{m.from==='bot'?'🤖':'🧑‍💼'} </strong>{m.text}</div>
-        ))}
+      <div className="nav">
+        <input className="input" placeholder="Stel je vraag over de website…" value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&ask()} />
+        <button className="btn" onClick={ask} disabled={busy}>Zoek</button>
       </div>
-      <div style={{display:'flex', gap:8}}>
-        <input className="input" placeholder="Typ je vraag..." value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&input.trim()&&ask(input)} />
-        <button className="btn" onClick={()=>input.trim()&&ask(input)}>Stuur</button>
-      </div>
+
+      {items.length>0 && (
+        <div style={{marginTop:12}}>
+          {items.map((it, idx)=>(
+            <div key={idx} style={{margin:'8px 0', padding:'10px', border:'1px solid rgba(148,163,184,.25)', borderRadius:10}}>
+              <div className="small"><a href={it.url} target="_blank" rel="noreferrer">{it.title || it.url}</a></div>
+              <div style={{marginTop:6, whiteSpace:'pre-wrap'}}>{it.snippet}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

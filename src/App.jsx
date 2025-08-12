@@ -4,7 +4,6 @@ import FaqBot from './FaqBot.jsx'
 
 const VIEWS = {
   WELCOME: 'WELCOME',
-  ROOT_MENU: 'ROOT_MENU',
   CAPACITY_MENU: 'CAPACITY_MENU',
   ASSIGNMENTS_MENU: 'ASSIGNMENTS_MENU',
   CAPACITY_FORM: 'CAPACITY_FORM',
@@ -13,7 +12,6 @@ const VIEWS = {
 
 export default function App() {
   const [view, setView] = useState(VIEWS.WELCOME)
-
   const go = (v) => setView(v)
   const openLink = (url) => { window.location.href = url }
 
@@ -71,7 +69,7 @@ export default function App() {
 
           {view === VIEWS.FAQ && (
             <div>
-              <FaqBot title="Conclusion FAQ" />
+              <FaqBot title="Conclusion FAQ (website)" />
               <div className="nav">
                 <button className="btn secondary" onClick={()=>go(VIEWS.WELCOME)}>Terug naar start</button>
               </div>
