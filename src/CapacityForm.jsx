@@ -47,7 +47,7 @@ function Field({ cfg, value, setValue }){
   )
 }
 
-export default function CapacityForm({ onDone }){
+export default function CapacityForm({ onBackToMenu, onDone }){
   const [step, setStep] = useState(0)
   const [data, setData] = useState({})
   const total = FLOW.length
@@ -77,6 +77,9 @@ export default function CapacityForm({ onDone }){
   return (
     <div className="grid">
       <aside className="sidebar">
+        <div className="nav" style={{marginTop:0, marginBottom:6}}>
+          <button className="btn ghost" onClick={onBackToMenu}>← Naar vorige stap</button>
+        </div>
         <h3>Vragenoverzicht</h3>
         <div className="progressbar"><div className="progressfill" style={{width: progressPct+'%'}}/></div>
         <div className="small" style={{marginBottom:8}}>Voortgang: {answeredCount}/{total} ({progressPct}%)</div>

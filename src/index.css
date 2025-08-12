@@ -16,6 +16,7 @@ h1{font-size:20px;margin:0}
 .menu .btn:hover{border-color:var(--accent)}
 .btn{background:var(--accent);color:#fff;border:none;padding:12px 16px;border-radius:10px;font-weight:600;cursor:pointer}
 .btn.secondary{background:#1f2937}
+.btn.ghost{background:transparent;border:1px solid rgba(148,163,184,.25);color:#e2e8f0}
 .btn:disabled{opacity:.6;cursor:not-allowed}
 .nav{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
 
@@ -50,3 +51,36 @@ h1{font-size:20px;margin:0}
 .textarea{min-height:170px;resize:vertical}
 .select{appearance:none}
 .hint{font-size:12px;color:#94a3b8;margin-top:6px}
+
+/* Chat widget */
+.widget-launcher{
+  position:fixed; right:20px; bottom:20px; z-index:9999;
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--accent); color:#fff; border:none; cursor:pointer;
+  box-shadow:0 10px 22px rgba(0,0,0,.35);
+}
+.widget-panel{
+  position:fixed; right:20px; bottom:20px; z-index:9998;
+  width:380px; height:540px; background:var(--card);
+  border:1px solid rgba(148,163,184,.2); border-radius:16px;
+  box-shadow:0 20px 50px rgba(0,0,0,.45); overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.widget-header{
+  padding:12px 14px; border-bottom:1px solid rgba(148,163,184,.15);
+  display:flex; align-items:center; gap:8px;
+}
+.widget-body{ padding:14px; overflow:auto; flex:1 }
+.widget-footer{ padding:12px; border-top:1px solid rgba(148,163,184,.15) }
+.widget-actions{ margin-left:auto; display:flex; gap:8px }
+.widget-fullscreen{
+  position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.6);
+  display:flex; align-items:center; justify-content:center;
+}
+.widget-shell{
+  width:min(1000px, 96vw); height:min(88vh, 820px);
+}
+.chat-bubble{padding:10px 12px; border-radius:12px; margin:8px 0; max-width:80%}
+.chat-bot{background:#151a2c; border:1px solid rgba(148,163,184,.2)}
+.chat-user{background:#1d2751; border:1px solid rgba(148,163,184,.2); margin-left:auto}
